@@ -23,6 +23,46 @@ function randomPrice() {
   return Math.floor(Math.random() * 26) + 5;
 }
 
+let audioCtx;
+function playBeep() {
+  const t = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = "square";
+  osc.frequency.value = 700;
+  gain.gain.setValueAtTime(0, t);
+  gain.gain.linearRampToValueAtTime(0.5, t + 0.002);
+  gain.gain.setValueAtTime(0.5, t + 0.05);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+  osc.connect(gain).connect(audioCtx.destination);
+  osc.start(t);
+  osc.stop(t + 0.1);
+}
+
+async function beep() {
+  try {
+    if (!audioCtx) {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      audioCtx = new Ctx();
+    }
+    if (audioCtx.state === "suspended") await audioCtx.resume();
+    playBeep();
+  } catch (e) {
+    console.warn("beep failed", e);
+  }
+}
+
+function primeAudio() {
+  if (audioCtx) return;
+  const Ctx = window.AudioContext || window.webkitAudioContext;
+  if (!Ctx) return;
+  audioCtx = new Ctx();
+  if (audioCtx.state === "suspended") audioCtx.resume();
+}
+document.addEventListener("pointerdown", primeAudio, { once: true });
+document.addEventListener("keydown", primeAudio, { once: true });
+
 function objectUrl(blob) {
   const url = URL.createObjectURL(blob);
   objectUrls.add(url);
@@ -130,6 +170,7 @@ function resetSession() {
 }
 
 async function handleScan(barcode) {
+  beep();
   if (barcode === CLEAR_BARCODE) {
     await clear();
     resetSession();
