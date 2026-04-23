@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <title>Kasseapperat</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Kasse" />
+    <meta name="theme-color" content="#ffd400" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="icon.svg" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="layout">
+      <main id="hero" class="empty">
+        <img id="hero-img" alt="" hidden />
+        <div class="text">
+          <div id="hero-name">Scan en vare</div>
+          <div id="hero-brand"></div>
+        </div>
+      </main>
+      <aside id="sidebar">
+        <ul id="history"></ul>
+        <button id="pay-btn" type="button" disabled>Betal</button>
+      </aside>
+    </div>
+    <div id="pay-modal" hidden>
+      <div class="sheet">
+        <div id="pay-count"></div>
+        <div id="pay-total"></div>
+        <div class="row">
+          <button id="cancel-btn" type="button">Fortryd</button>
+          <button id="paid-btn" type="button">Betalt</button>
+        </div>
+      </div>
+    </div>
+    <div id="success" hidden>
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="44" />
+        <path d="M28 52 l16 16 l28 -32" />
+      </svg>
+    </div>
+    <div id="status" aria-live="polite"></div>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
