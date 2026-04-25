@@ -353,6 +353,18 @@ button {
   pointer-events: none;
 }
 
+#version {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
+  left: calc(env(safe-area-inset-left) + 0.75rem);
+  font-size: 0.7rem;
+  color: var(--muted);
+  opacity: 0.5;
+  font-family: "SF Mono", Menlo, monospace;
+  pointer-events: none;
+  z-index: 1;
+}
+
 @media (orientation: portrait) and (max-width: 900px) {
   #layout {
     grid-template-columns: 1fr;
