@@ -154,6 +154,48 @@ async function fetchFromApi(barcode) {
   };
 }
 
+function isIsbn13(barcode) {
+  return /^(978|979)\d{10}$/.test(barcode);
+}
+
+async function fetchFromOpenLibrary(isbn) {
+  const url =
+    "https://openlibrary.org/api/books?bibkeys=ISBN:" +
+    encodeURIComponent(isbn) +
+    "&jscmd=data&format=json";
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("http " + res.status);
+  const data = await res.json();
+  const book = data["ISBN:" + isbn];
+  if (!book) return null;
+  const authors = Array.isArray(book.authors)
+    ? book.authors.map((a) => a.name).filter(Boolean).join(", ")
+    : "";
+  const imgUrl =
+    book.cover?.large ||
+    book.cover?.medium ||
+    book.cover?.small ||
+    "https://covers.openlibrary.org/b/isbn/" +
+      encodeURIComponent(isbn) +
+      "-L.jpg?default=false";
+  let imageBlob = null;
+  if (imgUrl) {
+    try {
+      const imgRes = await fetch(imgUrl);
+      if (imgRes.ok) imageBlob = await imgRes.blob();
+    } catch {
+      // image fetch failed; keep record without blob
+    }
+  }
+  return {
+    name: book.title || "Ukendt vare",
+    brand: authors,
+    imageBlob,
+    price: randomPrice(),
+    scannedAt: Date.now(),
+  };
+}
+
 function resetHero(msg) {
   heroEl.classList.add("empty");
   heroImgEl.hidden = true;
@@ -192,7 +234,9 @@ async function handleScan(barcode) {
     return;
   }
   try {
-    record = await fetchFromApi(barcode);
+    record = isIsbn13(barcode)
+      ? await fetchFromOpenLibrary(barcode)
+      : await fetchFromApi(barcode);
   } catch (err) {
     setStatus("Ingen forbindelse");
     const fallback = {
