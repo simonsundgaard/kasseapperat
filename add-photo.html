@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tilføj foto · Kasseapperat</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="theme-color" content="#ffd400" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="icon.svg" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="photo-page" data-mode="idle">
+    <header id="photo-header">
+      <a href="index.html" id="photo-back" aria-label="Tilbage">←</a>
+      <h1 id="photo-title">Tilføj foto</h1>
+    </header>
+
+    <main id="photo-layout">
+      <section id="product-card" class="empty">
+        <div class="row">
+          <input
+            id="barcode-input"
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            placeholder="Stregkode"
+          />
+          <select id="image-field" data-mode-show="update">
+            <option value="front">Forside</option>
+            <option value="ingredients">Ingredienser</option>
+            <option value="nutrition">Næringsindhold</option>
+            <option value="packaging">Emballage</option>
+          </select>
+        </div>
+        <div class="product-preview">
+          <img id="product-img" alt="" hidden />
+          <div class="text">
+            <div id="product-name">Indtast eller scan stregkode</div>
+            <div id="product-brand"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="camera-card" data-mode-show="update">
+        <video id="camera" playsinline autoplay muted></video>
+        <canvas id="snap-canvas" hidden></canvas>
+        <img id="snap-preview" alt="" hidden />
+        <div class="camera-controls">
+          <button id="snap-btn" type="button" disabled>Tag billede</button>
+          <button id="retake-btn" type="button" hidden>Tag igen</button>
+          <button id="upload-btn" type="button" disabled>Send til Open Food Facts</button>
+        </div>
+      </section>
+
+      <section id="create-card" data-mode-show="create">
+        <h2>Ny vare</h2>
+        <div class="photo-slots">
+          <div class="photo-slot" data-slot="front">
+            <div class="slot-label">Forside *</div>
+            <div class="slot-preview empty"></div>
+            <button type="button" class="slot-snap">Tag billede</button>
+          </div>
+          <div class="photo-slot" data-slot="ingredients">
+            <div class="slot-label">Ingredienser *</div>
+            <div class="slot-preview empty"></div>
+            <button type="button" class="slot-snap">Tag billede</button>
+          </div>
+          <div class="photo-slot" data-slot="nutrition">
+            <div class="slot-label">Næringsindhold *</div>
+            <div class="slot-preview empty"></div>
+            <button type="button" class="slot-snap">Tag billede</button>
+          </div>
+        </div>
+
+        <video id="create-camera" playsinline autoplay muted></video>
+        <div id="create-camera-status">Vælg en plads for at tage billede</div>
+
+        <form id="create-form" autocomplete="off">
+          <div class="form-row">
+            <label>
+              Navn *
+              <input name="product_name" required />
+            </label>
+            <label>
+              Brand *
+              <input name="brands" required />
+            </label>
+          </div>
+          <div class="form-row">
+            <label>
+              Mængde *
+              <input name="quantity" placeholder="500 g" required />
+            </label>
+            <label>
+              Sprog
+              <select name="lang">
+                <option value="da" selected>Dansk</option>
+                <option value="en">English</option>
+                <option value="de">Deutsch</option>
+                <option value="sv">Svenska</option>
+                <option value="no">Norsk</option>
+              </select>
+            </label>
+          </div>
+
+          <details id="more-fields">
+            <summary>Flere felter (valgfri)</summary>
+            <div class="form-row">
+              <label>
+                Kategorier
+                <input name="categories" placeholder="snacks, kiks" />
+              </label>
+              <label>
+                Allergener
+                <input name="allergens" placeholder="gluten, mælk" />
+              </label>
+            </div>
+            <label>
+              Ingredienser (tekst)
+              <textarea name="ingredients_text" rows="3"></textarea>
+            </label>
+            <label>
+              Emballage
+              <input name="packaging" placeholder="pap, plastik" />
+            </label>
+
+            <fieldset>
+              <legend>Næringsindhold pr.</legend>
+              <label class="inline">
+                <select name="nutrition_data_per">
+                  <option value="100g" selected>100 g</option>
+                  <option value="serving">portion</option>
+                </select>
+              </label>
+              <div class="nutri-grid">
+                <label>Energi (kcal)<input name="nutriment_energy-kcal" type="number" step="any" /></label>
+                <label>Fedt (g)<input name="nutriment_fat" type="number" step="any" /></label>
+                <label>Mættet fedt (g)<input name="nutriment_saturated-fat" type="number" step="any" /></label>
+                <label>Kulhydrat (g)<input name="nutriment_carbohydrates" type="number" step="any" /></label>
+                <label>Sukker (g)<input name="nutriment_sugars" type="number" step="any" /></label>
+                <label>Protein (g)<input name="nutriment_proteins" type="number" step="any" /></label>
+                <label>Salt (g)<input name="nutriment_salt" type="number" step="any" /></label>
+              </div>
+            </fieldset>
+          </details>
+
+          <button id="create-submit" type="submit" disabled>Opret vare</button>
+        </form>
+      </section>
+    </main>
+
+    <div id="status" aria-live="polite"></div>
+    <script type="module" src="add-photo.js"></script>
+  </body>
+</html>
